@@ -1,23 +1,36 @@
 pipeline {
+
     agent any
 
+    tools {
+        maven 'Maven3'
+    }
+
     stages {
+
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-repo/selenium-demo.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                echo 'Building the project'
+                sh 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests'
+                sh 'mvn test'
             }
         }
 
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application'
-            }
+    }
+
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
         }
     }
 }
